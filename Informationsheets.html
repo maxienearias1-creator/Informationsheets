@@ -77,7 +77,7 @@
 
 <div class="container">
 
-    <!-- VIEW 1: FIRST-TIME REGISTRATION -->
+    <!-- FIRST-TIME USERS: INFORMATION FORM -->
     <div id="register-section" class="hidden">
         <h2>First-Time Registration</h2>
         <p>Please enter your information once. Next time you scan, this step will be skipped automatically.</p>
@@ -85,7 +85,7 @@
         <form id="info-form">
             <div class="form-group">
                 <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" placeholder="e.g. John Doe" required>
+                <input type="text" id="fullName" placeholder="e.g. Juan Dela Cruz" required>
             </div>
             <div class="form-group">
                 <label for="idNumber">ID / Member Number</label>
@@ -95,7 +95,7 @@
         </form>
     </div>
 
-    <!-- VIEW 2: DIRECT ATTENDANCE SUBMISSION -->
+    <!-- RETURNING USERS: DIRECT ATTENDANCE -->
     <div id="attendance-section" class="hidden">
         <div class="user-card">
             <h3 id="welcome-name">Welcome Back!</h3>
@@ -103,18 +103,16 @@
         </div>
 
         <h2>Attendance Check-In</h2>
-        <p>Your details are verified. Tap below to log your presence today.</p>
+        <p>Your details are verified. Tap below to log your attendance.</p>
 
-        <!-- REPLACE WITH YOUR GOOGLE FORM SUBMIT ACTION OR LINK -->
         <button id="mark-attendance-btn" onclick="submitAttendance()">Mark Me Present</button>
 
-        <button class="reset-btn" onclick="resetUser()">Not you? Change registration info</button>
+        <button class="reset-btn" onclick="resetUser()">Not you? Change saved registration info</button>
     </div>
 
 </div>
 
 <script>
-    // YOUR GOOGLE FORM ACTION LINK (Prefilled entry or Google Form URL)
     const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdOz8BN1tiqOR7IBF5nSDYXTkPkLc07U5NSLJrxuhQMBF2IQg/viewform";
 
     window.onload = function() {
@@ -126,46 +124,40 @@
         const savedID = localStorage.getItem("attendee_id");
 
         if (savedName && savedID) {
-            // User ALREADY exists -> Show Attendance section directly
+            // RETURNING USER: Skip form and show Attendance button directly
             document.getElementById("register-section").classList.add("hidden");
             document.getElementById("attendance-section").classList.remove("hidden");
             
             document.getElementById("welcome-name").innerText = "Welcome back, " + savedName + "!";
             document.getElementById("welcome-id").innerText = "ID: " + savedID;
         } else {
-            // NEW User -> Show Information Form first
+            // NEW USER: Require registration form first
             document.getElementById("register-section").classList.remove("hidden");
             document.getElementById("attendance-section").classList.add("hidden");
         }
     }
 
-    // Save info on first form submit
+    // Save info locally on phone browser
     document.getElementById("info-form").addEventListener("submit", function(e) {
         e.preventDefault();
         
         const name = document.getElementById("fullName").value;
         const id = document.getElementById("idNumber").value;
 
-        // Save into browser storage
         localStorage.setItem("attendee_name", name);
         localStorage.setItem("attendee_id", id);
 
-        // Switch to attendance screen immediately
         checkUserStatus();
     });
 
     // Mark attendance action
     function submitAttendance() {
-        const name = localStorage.getItem("attendee_name");
-        const id = localStorage.getItem("attendee_id");
-
-        // Redirect to your Google Form (or open it)
         window.location.href = GOOGLE_FORM_URL;
     }
 
-    // Reset saved user details
+    // Clear local storage if someone else uses the phone
     function resetUser() {
-        if (confirm("Are you sure you want to clear your saved info on this phone?")) {
+        if (confirm("Are you sure you want to clear saved information on this browser?")) {
             localStorage.removeItem("attendee_name");
             localStorage.removeItem("attendee_id");
             checkUserStatus();
