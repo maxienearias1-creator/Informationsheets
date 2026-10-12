@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Attendance System</title>
+    <title>Smart Attendance Check-In</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,7 +77,7 @@
 
 <div class="container">
 
-    <!-- FIRST-TIME USERS: INFORMATION FORM -->
+    <!-- FIRST-TIME USERS FORM -->
     <div id="register-section" class="hidden">
         <h2>First-Time Registration</h2>
         <p>Please enter your information once. Next time you scan, this step will be skipped automatically.</p>
@@ -95,7 +95,7 @@
         </form>
     </div>
 
-    <!-- RETURNING USERS: DIRECT ATTENDANCE -->
+    <!-- RETURNING USERS ATTENDANCE BUTTON -->
     <div id="attendance-section" class="hidden">
         <div class="user-card">
             <h3 id="welcome-name">Welcome Back!</h3>
@@ -107,7 +107,7 @@
 
         <button id="mark-attendance-btn" onclick="submitAttendance()">Mark Me Present</button>
 
-        <button class="reset-btn" onclick="resetUser()">Not you? Change saved registration info</button>
+        <button class="reset-btn" onclick="resetUser()">Not you? Change registration info</button>
     </div>
 
 </div>
@@ -124,20 +124,17 @@
         const savedID = localStorage.getItem("attendee_id");
 
         if (savedName && savedID) {
-            // RETURNING USER: Skip form and show Attendance button directly
             document.getElementById("register-section").classList.add("hidden");
             document.getElementById("attendance-section").classList.remove("hidden");
             
             document.getElementById("welcome-name").innerText = "Welcome back, " + savedName + "!";
             document.getElementById("welcome-id").innerText = "ID: " + savedID;
         } else {
-            // NEW USER: Require registration form first
             document.getElementById("register-section").classList.remove("hidden");
             document.getElementById("attendance-section").classList.add("hidden");
         }
     }
 
-    // Save info locally on phone browser
     document.getElementById("info-form").addEventListener("submit", function(e) {
         e.preventDefault();
         
@@ -150,14 +147,12 @@
         checkUserStatus();
     });
 
-    // Mark attendance action
     function submitAttendance() {
         window.location.href = GOOGLE_FORM_URL;
     }
 
-    // Clear local storage if someone else uses the phone
     function resetUser() {
-        if (confirm("Are you sure you want to clear saved information on this browser?")) {
+        if (confirm("Are you sure you want to clear saved information on this device?")) {
             localStorage.removeItem("attendee_name");
             localStorage.removeItem("attendee_id");
             checkUserStatus();
